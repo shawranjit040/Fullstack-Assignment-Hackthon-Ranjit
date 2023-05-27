@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Train Search</title>
+  </head>
+  <body>
+    <h1>Train Search</h1>
+
+    <label for="source">Source:</label>
+    <select id="source">
+    <option value="Station A">Station A</option>
+      <option value="Station B">Station B</option>
+      <option value="Station C">Station C</option>
+      <!-- Add more station options as needed -->
+    </select>
+
+    <label for="destination">Destination:</label>
+    <select id="destination">
+      <option value="Station A">Station A</option>
+      <option value="Station B">Station B</option>
+      <option value="Station C">Station C</option>
+      <!-- Add more station options as needed -->
+    </select>
+
+    <button id="searchBtn">Search</button>
+
+    <h2>Train Search Results:</h2>
+
+    <table id="trainTable">
+      <thead>
+        <tr>
+          <th>Train Name</th>
+          <th>Departure Time</th>
+          <th>Arrival Time</th>
+          <th>Ticket Price (Rs)</th>
+        </tr>
+      </thead>
+      <tbody id="trainBody">
+        <!-- Train search results will be dynamically populated here -->
+      </tbody>
+    </table>
+
+    <script>
+      // Function to make an HTTP GET request to the server and retrieve train search results
+      function searchTrains() {
+        const source = document.getElementById('source').value;
+        const destination = document.getElementById('destination').value;
+
+        fetch(`/trains?source=${source}&destination=${destination}`)
+          .then(response => response.json())
+          .then(data => {
+            const trainBody = document.getElementById('trainBody');
+            trainBody.innerHTML = '';
+
+            data.forEach(train => {
+              const row = document.createElement('tr');
+
+              const nameCell = document.createElement('td');
+              nameCell.textContent = train.name;
+              row.appendChild(nameCell);
+
+              const departureCell = document.createElement('td');
+              departureCell.textContent = train.departureTime;
+              row.appendChild(departureCell);
+
+              const arrivalCell = document.createElement('td');
+              arrivalCell.textContent = train.arrivalTime;
+              row.appendChild(arrivalCell);
+
+              const priceCell = document.createElement('td');
+              priceCell.textContent = train.price;
+              row.appendChild(priceCell);
+
+              trainBody.appendChild(row);
+            });
+          })
+          .catch(error => {
+            console.error('Error retrieving train search results:', error);
+          });
+      }
+
+      // Attach click event listener to the search button
+      const searchBtn = document.getElementById('searchBtn');
+      searchBtn.addEventListener('click', searchTrains);
+    </script>
+  </body>
+</html>
